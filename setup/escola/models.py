@@ -23,9 +23,9 @@ class Curso(models.Model):
         return self.descricao
     
 class Tarefas(models.Model):
-    usuario = models.CharField(max_length=50)
+    usuario = models.CharField(max_length=50, null=False)
     descricao = models.CharField(max_length=400, null=False)
-    data = models.DateField(max_length=10, default='0001-01-01')
+    data = models.DateField(max_length=10, default='0001-01-01', null=True)
     horario = models.CharField(max_length=10, default='00:00', null=True)
     passo1 = models.CharField(max_length=100, null=True)
     passo2 = models.CharField(max_length=100, null=True)

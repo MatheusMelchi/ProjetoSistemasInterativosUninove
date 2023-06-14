@@ -25,7 +25,7 @@ class UsuariosViewSet(viewsets.ModelViewSet):
     serializer_class = UsuarioSerializer
 
 def GetUsuarioByEmail(request, email):
-    usuario = Usuario.objects.get(pk=email)
+    usuario = Usuario.objects.get(email=email)
     return JsonResponse(usuario)
 
 def alunos(resquest):
