@@ -1,0 +1,69 @@
+<html ng-app="mindBookshelf">
+    <head>
+        <title>Mind Bookshelf - Login</title>
+        <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+        <style>
+            .telaPrincipal{
+                width: 400px;
+                margin-left: auto;
+                margin-right: auto;
+                margin-top: 100px;
+            }
+        </style>
+        <script src="js/angular.min.js"></script>
+        <script src="node_modules/angular-br-filters/release/angular-br-filters.min.js"></script>
+        <script src="node_modules/angular-input-masks/releases/angular-input-masks-standalone.min.js"></script>
+        <script>
+            angular.module("mindBookshelf", []);
+            angular.module("mindBookshelf", ['ui.utils.masks']);
+            angular.module("mindBookshelf").controller("mindBookshelfLoginController", function ($scope, $http){
+
+                $scope.getUsuario = function () {
+                    $http.get("http://localhost:8000/usuarios/?email=" + $scope.emailLogin + "&senha=" + $scope.senhaLogin)
+                        .then(function(response){
+                            $scope.usuarioResposta = response.data;
+                        })
+                }
+
+                $scope.getTeste = function (){
+                    $http.get("http://localhost:8000/usuarios/?email=matheusmelchiades@hotmail.com")
+                        .then(function(response){
+                            $scope.dadosTeste = response.data;
+                        })
+                }
+
+            })
+        </script>
+    </head>
+    <body ng-controller="mindBookshelfLoginController">
+        <div class="telaPrincipal">
+            <div style="text-align: center; background-color: pink; height: 150px; text-a">
+                <h4 style="padding: 50px 0; font-size: 40px">Mind Bookshelf</h4>
+            </div>
+            <div>
+                <form>
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Email</label>
+                        <input type="email" class="form-control" id="exampleInputEmail1" ng-model="emailLogin" aria-describedby="emailHelp" placeholder="Email">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputPassword1">Senha</label>
+                        <input type="password" class="form-control" id="exampleInputPassword1" ng-model="senhaLogin" placeholder="Senha">
+                    </div>
+                    <br>
+                      <button type="submit" class="btn btn-primary" ng-click="getUsuario()">Login</button>
+                      <a type="button" class="btn btn-danger" href="">Criar Conta</a>
+                    </form>
+                </form>
+            </div>
+            <div ng-show="usuarioResposta != null">
+                {{usuarioResposta}}
+            </div>
+            <div>
+                <button class="btn btn-primary" ng-click="getTeste()">teste</button>
+                {{dadosTeste}}
+            </div>
+        </div>
+    </body>
+
+</html>

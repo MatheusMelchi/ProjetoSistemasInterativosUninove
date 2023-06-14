@@ -1,5 +1,5 @@
 from django.contrib import admin
-from escola.models import Aluno, Curso, Tarefas
+from escola.models import Aluno, Curso, Tarefas, Usuario
 
 class Alunos(admin.ModelAdmin):
     list_display = ('id', 'nome', 'rg', 'cpf', 'data_nascimento')
@@ -24,4 +24,10 @@ class TarefasDisplay(admin.ModelAdmin):
     list_per_page = 100
     
 admin.site.register(Tarefas, TarefasDisplay)
+
+class Usuarios(admin.ModelAdmin):
+    list_display = ('email', 'usuario')
+    list_display_links = ('email', 'usuario')
+    search_fields = ('email',)
+    list_per_page = 100
 # Register your models here.

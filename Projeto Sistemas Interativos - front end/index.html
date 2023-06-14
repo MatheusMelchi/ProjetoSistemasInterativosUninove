@@ -1,0 +1,133 @@
+<html ng-app="mindBookshelf">
+    <head>
+        <title>Mind Bookshelf</title>
+        <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+        <script src="js/angular.min.js"></script>
+        <script src="node_modules/angular-br-filters/release/angular-br-filters.min.js"></script>
+        <script src="node_modules/angular-input-masks/releases/angular-input-masks-standalone.min.js"></script>
+        <script src="node_modules/moment/moment.js"></script>
+        <script>
+            angular.module("mindBookshelf", []);
+            angular.module("mindBookshelf", ['ui.utils.masks']);
+            angular.module("mindBookshelf").controller("mindBookshelfController", function($scope, $http){
+                $scope.titulo = "Mind Bookshelf";
+                $scope.listaTarefas = [];
+                $scope.listaConcluidos = [];
+
+                listaTarefasPost = []
+                listaConcluidosPost = []
+
+
+                $scope.showAdicionarTarefa = false;
+
+                $scope.adicionarTarefa = function (tarefaObjeto) {
+                    $scope.listaTarefas.push(tarefaObjeto);
+                }
+
+                $scope.testeApi = function() {
+                    $http.get("http://localhost:8000/tarefas/")
+                        .then(function(response){
+                            $scope.apiResponse = response.data;
+                        });
+                }
+
+                $scope.mostrarConsole = function() {
+                    console.log($scope.apiResponse);
+                }
+
+                $scope.removerConcluido = function (tarefa) {
+                    $scope.listaTarefas.push(tarefa);
+                    var indexTarefa = $scope.listaConcluidos.indexOf(tarefa);
+                    $scope.listaConcluidos.splice(indexTarefa, 1);
+                
+                }
+                $scope.adicionarConcluido = function (tarefa){
+                    $scope.listaConcluidos.push(tarefa)
+                    var indexTarefa = $scope.listaTarefas.indexOf(tarefa);
+                    $scope.listaTarefas.splice(indexTarefa, 1);
+                }
+
+                $scope.salvarTarefas = function (){
+                    listaTarefasPost = $scope.listaTarefas
+                    listaConcluidosPost = $scope.listaConcluidos
+                    listaTarefasPost.forEach(element => {
+                        var dia = element.data.getDate();
+                        var mes = element.data.getMonth();
+                        var ano = element.data.getFullYear();
+                        var dataFormatada = ano + '-' + mes + '-' + dia
+                        element.data = dataFormatada
+                        console.log(element)
+                        $http.post("http://localhost:8000/tarefas/", element)
+                    });
+
+                    listaConcluidosPost.forEach(element => {
+                        $http.post("http://localhost:8000/tarefas/", element)
+                    });
+                }
+            });
+            
+        </script>
+        <script src="js/bootstrap.min.js"></script>
+    </head>
+
+    <body ng-controller="mindBookshelfController">
+        <div class="jumbotron">
+            <h4 ng-bind="titulo" text-alling></h4>
+        </div>
+        <h5>A Fazer!</h5>
+        <table class="table table-hover">
+        <tr>
+            <th>Tarefa</th>
+            <th>Data</th>
+            <th>Horario</th>
+            <th>Concluido</th>
+        </tr>
+        <tr ng-repeat="tarefa in listaTarefas">
+            <td>{{tarefa.descricao}}</td>
+            <td>{{tarefa.data | date:'dd/MM/yyyy'}}</td>
+            <td>{{tarefa.horario}}</td>
+            <td><input type="checkbox" ng-model="tarefa.concluido" ng-change="adicionarConcluido(tarefa)"></td>
+        </tr>
+        </table>
+        <hr/>
+        <h5>Concluido!</h5>
+        <table class="table table-hover">
+            <tr>
+                <th>Tarefa</th>
+                <th>Data</th>
+                <th>Horario</th>
+                <th>Concluido</th>
+            </tr>
+            <tr ng-repeat="tarefa in listaConcluidos">
+                <td>{{tarefa.descricao}}</td>
+                <td>{{tarefa.data | date:'dd/MM/yyyy'}}</td>
+                <td>{{tarefa.horario}}</td>
+                <td><input type="checkbox" ng-model="tarefa.concluido" ng-change="removerConcluido(tarefa)"></td>
+            </tr>
+        </table>
+        <button class="btn btn-primary" ng-click="showAdicionarTarefa == false ? showAdicionarTarefa = true : showAdicionarTarefa = false">Adicionar</button>
+        <form name="adicionarTarefaForm" ng-show="showAdicionarTarefa == true">
+            Usuario <input type="text" name="tarefaPost.usuario" class="form-control" ng-model="tarefaPost.usuario" required/>
+            <br>
+            Tarefa <input type="text" name="tarefaPost.descricao" class="form-control" ng-model="tarefaPost.descricao" required/> 
+            <br>
+            Data <input type="date" name="tarefaPost.data" class="form-control" ng-model="tarefaPost.data" required/> 
+            <br>
+            Horario <input type="text" name="tarefaPost.horario" class="form-control" ng-model="tarefaPost.horario" ui-time-mask="short"/>
+            <br>
+            Passo 1 <input type="text" name="tarefaPost.passo1" class="form-control" ng-model="tarefaPost.passo1"/>
+            <br>
+            Passo 2 <input type="text" name="tarefaPost.passo2" class="form-control" ng-model="tarefaPost.passo2"/>
+            <br>
+            Passo 3 <input type="text" name="tarefaPost.passo3" class="form-control" ng-model="tarefaPost.passo3"/>
+            <br>
+            Passo 4 <input type="text" name="tarefaPost.passo4" class="form-control" ng-model="tarefaPost.passo4"/>
+            <br>
+            Passo 5 <input type="text" name="tarefaPost.passo5" class="form-control" ng-model="tarefaPost.passo5"/>
+            <button type="submit" name="botaoAdd" class="btn btn-primary" ng-model="botaoAdd" ng-click="adicionarTarefa(tarefaPost)" ng-disable="adicionarTarefaForm.$invalid">Adicionar</button>
+        </form>
+        <button class="btn btn-primary" ng-model="botaoAPI" ng-click="testeApi()" ng>Teste API</button>
+        <button class="btn btn-primary" ng-model="botaoMostrar" ng-click="mostrarConsole()" ng>mostrar console</button>
+        <button class="btn btn-primary" ng-model="botaoSalvar" ng-click="salvarTarefas()" ng>Salvar Tarefas</button>
+    </body>
+</html>

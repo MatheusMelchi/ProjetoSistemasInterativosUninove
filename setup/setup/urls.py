@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from escola.views import AlunosViewSet, CursosViewSet,  TarefasViewSet
+from escola.views import AlunosViewSet, CursosViewSet,  TarefasViewSet, UsuariosViewSet, GetUsuarioByEmail
 from rest_framework import routers
 
 
@@ -23,8 +23,14 @@ router = routers.DefaultRouter()
 router.register('alunos', AlunosViewSet, basename="Alunos")
 router.register('cursos', CursosViewSet, basename="Cursos")
 router.register('tarefas', TarefasViewSet, basename="Tarefas")
+router.register('usuarios', UsuariosViewSet, basename="Usuarios")
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include(router.urls))
+    path('', include(router.urls)),
+    path(r'^usuarios/(?P<email>\w{0,100})/$', GetUsuarioByEmail)
 ]
+
+
+

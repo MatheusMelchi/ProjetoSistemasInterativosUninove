@@ -1,6 +1,5 @@
 from django.db import models
 
-
 class Aluno(models.Model):
     nome = models.CharField(max_length=50)
     rg = models.CharField(max_length=9)
@@ -24,15 +23,23 @@ class Curso(models.Model):
         return self.descricao
     
 class Tarefas(models.Model):
-    usuario = models.CharField(max_length=20)
+    usuario = models.CharField(max_length=50)
     descricao = models.CharField(max_length=400, null=False)
-    data = models.DateField(max_length=10, default='0000')
-    horario = models.CharField(max_length=10, default='00:00')
-    passo1 = models.CharField(max_length=100)
-    passo2 = models.CharField(max_length=100)
-    passo3 = models.CharField(max_length=100)
-    passo4 = models.CharField(max_length=100)
-    passo5 = models.CharField(max_length=100)
+    data = models.DateField(max_length=10, default='0001-01-01')
+    horario = models.CharField(max_length=10, default='00:00', null=True)
+    passo1 = models.CharField(max_length=100, null=True)
+    passo2 = models.CharField(max_length=100, null=True)
+    passo3 = models.CharField(max_length=100, null=True)
+    passo4 = models.CharField(max_length=100, null=True)
+    passo5 = models.CharField(max_length=100, null=True)
     def __str__(self) -> str:
         return self.descricao
+    
+class Usuario(models.Model):
+    email = models.EmailField(max_length=100, primary_key=True)
+    usuario = models.CharField(max_length=50)
+    senha = models.CharField(max_length=50)
+    foto_perfil = models.ImageField()
+    def __str__(self) -> str:
+        return self.email
 # Create your models here.
